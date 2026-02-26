@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Config (sensitive info)
+config.yaml
+.env
+
+# Generated files
+*.html
+*.log
+
+# Test files
+test-*.ts
+check-*.ts
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
