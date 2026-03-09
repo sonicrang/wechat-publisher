@@ -49,7 +49,7 @@ const STYLES: Record<string, string> = {
   strong: `color:${PRIMARY_COLOR};font-weight:bold;`,
   a: 'color:#576b95;text-decoration:none;',
   img: 'width:100%;max-width:100%;height:auto;margin:0;border-radius:4px;display:block;',
-  figure: 'margin:0.35em 8px;width:calc(100% - 16px);box-sizing:border-box;',
+  figure: 'margin:0.35em 0;width:100%;box-sizing:border-box;padding:0 8px;',
   figcaption: 'text-align:center;color:#888;font-size:0.8em;',
   hr: 'border-style:solid;border-width:1px 0 0;border-color:rgba(0,0,0,0.1);margin:1.5em 0;',
   footnotes: 'margin:0.5em 8px;font-size:80%;color:#333;',
@@ -192,7 +192,7 @@ function addInlineStyles(html: string): string {
     { pattern: /<strong[^>]*class="strong"[^>]*>/g, style: STYLES.strong },
     { pattern: /<pre[^>]*class="hljs code__pre"[^>]*>/g, style: 'font-size:90%;overflow-x:auto;border-radius:8px;padding:16px !important;line-height:1.5;margin:10px 8px;background:#0d1117;display:block;' },
     { pattern: /<span[^>]*class="mac-sign"[^>]*>/g, style: 'display:block;width:100%;padding:10px 14px 8px;' },
-    { pattern: /<figure[^>]*>/g, style: 'margin:0.35em 0;width:100%;box-sizing:border-box;' },
+    { pattern: /<figure[^>]*>/g, style: 'margin:0.35em 0;width:100%;box-sizing:border-box;padding:0 8px;' },
     { pattern: /<img[^>]*src="[^"]*"[^>]*>/g, style: 'width:100%;max-width:100%;height:auto;margin:0;border-radius:4px;display:block;' },
     { pattern: /<figcaption[^>]*class="figcaption"[^>]*>/g, style: STYLES.figcaption },
     { pattern: /<table[^>]*class="preview-table"[^>]*>/g, style: STYLES.table },
@@ -265,7 +265,7 @@ function normalizeLeadingCover(html: string): string {
   // 首图作为封面：压掉上下间距，并与正文同宽
   normalized = normalized.replace(
     /^<img([^>]*)style="([^"]*)"([^>]*)>/,
-    (_match, before, style, after) => `<img${before}style="${style};margin:0 8px 0.35em;width:calc(100% - 16px);max-width:calc(100% - 16px);box-sizing:border-box;"${after}>`
+    (_match, before, style, after) => `<img${before}style="${style};margin:0 0 0.35em;width:100%;max-width:100%;box-sizing:border-box;"${after}>`
   )
 
   // 紧跟首图后的第一段正文取消顶部边距，避免图下出现明显空白
@@ -287,9 +287,10 @@ function convertToHTML(markdown: string): string {
     themeMode: 'light',
   })
   
-  // 测试用：去掉正文中的图片渲染，只保留文本内容，便于排查对齐问题
-  let cleanMarkdown = markdown.replace(/!\[[^\]]*\]\([^\)]+\)/g, '')
-  cleanMarkdown = cleanMarkdown.replace(/\n{3,}/g, '\n\n')
+  // 轻度清理图片周围的多余空行，避免图片块前后被额外段落撑开
+  let cleanMarkdown = markdown.replace(/\n\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
+  cleanMarkdown = cleanMarkdown.replace(/\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
+  cleanMarkdown = cleanMarkdown.replace(/\n\n(!\[.*?\]\(.*?\))\n/g, '\n$1\n')
   
   const { markdownContent, readingTime } = renderer.parseFrontMatterAndContent(cleanMarkdown)
   marked.setOptions({ breaks: true })
