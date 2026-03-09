@@ -36,7 +36,7 @@ const STYLES: Record<string, string> = {
   h2: `display:table;padding:0.3em 1em;margin:4em auto 2em;color:#fff;background:${PRIMARY_COLOR};font-size:20.8px;font-weight:bold;text-align:center;border-radius:8px;`,
   h3: `padding-left:12px;border-left:4px solid ${PRIMARY_COLOR};border-bottom:1px dashed ${PRIMARY_COLOR};margin:2em 8px 0.75em 0;color:#333;font-size:19.2px;font-weight:bold;line-height:1.2;`,
   h4: `margin:2em 8px 0.5em;color:${PRIMARY_COLOR};font-size:17.6px;font-weight:bold;`,
-  p: `margin:1.5em 8px;letter-spacing:0.1em;color:#333;line-height:1.75;`,
+  p: `margin:1.5em 0; padding:0 8px; box-sizing:border-box; letter-spacing:0.1em;color:#333;line-height:1.75;`,
   blockquote: `font-style:italic;padding:1em 1em 1em 2em;border-left:4px solid ${PRIMARY_COLOR};border-radius:6px;color:rgba(0,0,0,0.6);background:#f7f7f7;margin:1em 8px;font-size:16px;`,
   ul: 'list-style:none;padding-left:1.5em;margin:1.5em 8px;',
   ol: 'padding-left:1em;margin-left:0;',
