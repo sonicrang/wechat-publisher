@@ -256,22 +256,22 @@ function extractTitle(markdown: string): string {
 function normalizeLeadingCover(html: string): string {
   let normalized = html
 
-  // 去掉首图前可能出现的空段落
+  // 如果正文第一项是 figure+img，就把它改成纯 img，避免微信对 figure/figcaption 产生额外留白
   normalized = normalized.replace(
-    /^(\s*(?:<p[^>]*style="[^"]*"[^>]*>\s*(?:&nbsp;|<br\s*\/?>|\s)*<\/p>\s*)+)(<figure[^>]*>)/,
-    '$2'
+    /^<figure[^>]*>\s*(<img[^>]*>)\s*<figcaption[^>]*><\/figcaption>\s*<\/figure>/,
+    '$1'
   )
 
-  // 首图作为封面：压掉上下间距
+  // 首图作为封面：压掉上下间距，并与正文同宽
   normalized = normalized.replace(
-    /<figure([^>]*)style="([^"]*)"([^>]*)>/,
-    (_match, before, style, after) => `<figure${before}style="${style};margin:0 8px 0.35em;width:auto;"${after}>`
+    /^<img([^>]*)style="([^"]*)"([^>]*)>/,
+    (_match, before, style, after) => `<img${before}style="${style};margin:0 8px 0.35em;width:auto;max-width:calc(100% - 16px);"${after}>`
   )
 
   // 紧跟首图后的第一段正文取消顶部边距，避免图下出现明显空白
   normalized = normalized.replace(
-    /(<\/figure>\s*)(<p([^>]*)style="([^"]*)"([^>]*)>)/,
-    (_match, figureClose, pOpen, before, style, after) => `${figureClose}<p${before}style="${style};margin-top:0;"${after}>`
+    /(<\/img>|^<img[^>]*>)(\s*<p([^>]*)style="([^"]*)"([^>]*)>)/,
+    (_match, imgPart, pOpen, before, style, after) => `${imgPart}<p${before}style="${style};margin-top:0;"${after}>`
   )
 
   return normalized
