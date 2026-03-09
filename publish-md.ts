@@ -290,10 +290,8 @@ function convertToHTML(markdown: string): string {
     themeMode: 'light',
   })
   
-  // 轻度清理图片周围的多余空行，避免图片块前后被额外段落撑开
-  let cleanMarkdown = markdown.replace(/\n\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
-  cleanMarkdown = cleanMarkdown.replace(/\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
-  cleanMarkdown = cleanMarkdown.replace(/\n\n(!\[.*?\]\(.*?\))\n/g, '\n$1\n')
+  // 保留 Markdown 原始段落边界，避免图片与相邻正文被折叠进同一段落流
+  const cleanMarkdown = markdown
   
   const { markdownContent, readingTime } = renderer.parseFrontMatterAndContent(cleanMarkdown)
   marked.setOptions({ breaks: true })
