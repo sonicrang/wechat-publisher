@@ -256,7 +256,7 @@ function extractTitle(markdown: string): string {
 function normalizeLeadingCover(html: string): string {
   let normalized = html
 
-  // 首图如果已经被渲染为图片段落，压掉段落和图片本身的上下空白
+  // 首图如果已经被渲染为图片段落，只压缩它自己的上下间距；不要再改后续正文段落的横向/纵向逻辑
   normalized = normalized.replace(
     /^<p([^>]*)class="p image-block"([^>]*)style="([^"]*)"([^>]*)>(\s*<img[^>]*style="([^"]*)"[^>]*>\s*)<\/p>/,
     (_match, beforeClass, afterClass, pStyle, afterStyle, imgHtml, imgStyle) => {
@@ -271,16 +271,10 @@ function normalizeLeadingCover(html: string): string {
     '$1'
   )
 
-  // 如果还是旧结构里的纯 img，继续做首图压缩
+  // 如果还是旧结构里的纯 img，继续只做首图自身的间距压缩
   normalized = normalized.replace(
     /^<img([^>]*)style="([^"]*)"([^>]*)>/,
     (_match, before, style, after) => `<img${before}style="${style};margin:0 0 0.35em;width:100%;max-width:100%;box-sizing:border-box;"${after}>`
-  )
-
-  // 紧跟首图后的第一段正文取消顶部边距，避免图下出现明显空白
-  normalized = normalized.replace(
-    /(<\/p>|<\/img>|^<img[^>]*>)(\s*<p([^>]*)style="([^"]*)"([^>]*)>)/,
-    (_match, prevPart, pOpen, before, style, after) => `${prevPart}<p${before}style="${style};margin-top:0;"${after}>`
   )
 
   return normalized
