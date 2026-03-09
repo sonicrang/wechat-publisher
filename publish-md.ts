@@ -253,6 +253,30 @@ function extractTitle(markdown: string): string {
   return '未命名文章'
 }
 
+function normalizeLeadingCover(html: string): string {
+  let normalized = html
+
+  // 去掉首图前可能出现的空段落
+  normalized = normalized.replace(
+    /^(\s*(?:<p[^>]*style="[^"]*"[^>]*>\s*(?:&nbsp;|<br\s*\/?>|\s)*<\/p>\s*)+)(<figure[^>]*>)/,
+    '$2'
+  )
+
+  // 首图作为封面：压掉上下间距
+  normalized = normalized.replace(
+    /<figure([^>]*)style="([^"]*)"([^>]*)>/,
+    (_match, before, style, after) => `<figure${before}style="${style};margin:0 8px 0.35em;width:auto;"${after}>`
+  )
+
+  // 紧跟首图后的第一段正文取消顶部边距，避免图下出现明显空白
+  normalized = normalized.replace(
+    /(<\/figure>\s*)(<p([^>]*)style="([^"]*)"([^>]*)>)/,
+    (_match, figureClose, pOpen, before, style, after) => `${figureClose}<p${before}style="${style};margin-top:0;"${after}>`
+  )
+
+  return normalized
+}
+
 function convertToHTML(markdown: string): string {
   const renderer = initRenderer({
     legend: 'alt',
@@ -285,6 +309,9 @@ function convertToHTML(markdown: string): string {
 
   // 移除 figcaption 内容但保留标签
   htmlContent = htmlContent.replace(/<figcaption[^>]*>.*?<\/figcaption>/g, `<figcaption style="${STYLES.figcaption}"></figcaption>`)
+
+  // 根据截图特判正文首图：作为封面块处理，压掉上下空白并对齐后续正文
+  htmlContent = normalizeLeadingCover(htmlContent)
 
   const bodyHTML = renderer.createContainer([
     renderer.buildReadingTime(readingTime),
