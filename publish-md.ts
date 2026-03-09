@@ -43,7 +43,7 @@ const STYLES: Record<string, string> = {
   li: 'display:block;margin:0.5em 8px;color:#333;',
   code: 'font-size:90%;color:#d14;background:rgba(27,31,35,0.05);padding:3px 5px;border-radius:4px;font-family:Monaco,Consolas,monospace;',
   pre: 'font-size:90%;overflow-x:auto;border-radius:8px;padding:16px !important;line-height:1.5;margin:10px 8px;background:#0d1117;display:block;',
-  table: 'color:#333;width:100%;border-collapse:separate;border-spacing:0;border-radius:8px;margin:0.5em 8px;overflow:hidden;border:1px solid #dfdfdf;',
+  table: 'color:#333;width:max-content;min-width:640px;border-collapse:separate;border-spacing:0;border-radius:8px;margin:0.5em 8px;overflow:hidden;border:1px solid #dfdfdf;',
   th: `border:1px solid #dfdfdf;padding:0.5em 1em;background:${PRIMARY_COLOR};color:#fff;font-weight:bold;text-align:left;`,
   td: 'border:1px solid #dfdfdf;padding:0.5em 1em;text-align:left;',
   strong: `color:${PRIMARY_COLOR};font-weight:bold;`,
