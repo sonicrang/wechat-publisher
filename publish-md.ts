@@ -287,10 +287,9 @@ function convertToHTML(markdown: string): string {
     themeMode: 'light',
   })
   
-  // 去掉图片上下的空行
-  let cleanMarkdown = markdown.replace(/\n\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
-  cleanMarkdown = cleanMarkdown.replace(/\n(!\[.*?\]\(.*?\))\n\n/g, '\n$1\n')
-  cleanMarkdown = cleanMarkdown.replace(/\n\n(!\[.*?\]\(.*?\))\n/g, '\n$1\n')
+  // 测试用：去掉正文中的图片渲染，只保留文本内容，便于排查对齐问题
+  let cleanMarkdown = markdown.replace(/!\[[^\]]*\]\([^\)]+\)/g, '')
+  cleanMarkdown = cleanMarkdown.replace(/\n{3,}/g, '\n\n')
   
   const { markdownContent, readingTime } = renderer.parseFrontMatterAndContent(cleanMarkdown)
   marked.setOptions({ breaks: true })
