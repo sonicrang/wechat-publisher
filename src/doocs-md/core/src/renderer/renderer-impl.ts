@@ -201,8 +201,9 @@ export function initRenderer(opts: IOpts = {}): RendererAPI {
     paragraph({ tokens }: Tokens.Paragraph): string {
       const text = this.parser.parseInline(tokens)
       const isFigureImage = text.includes(`<figure`) && text.includes(`<img`)
+      const isImageBlock = text.includes(`class="p image-block"`) && text.includes(`<img`)
       const isEmpty = text.trim() === ``
-      if (isFigureImage || isEmpty) {
+      if (isFigureImage || isImageBlock || isEmpty) {
         return text
       }
       return styledContent(`p`, text)
