@@ -45,7 +45,7 @@ const STYLES: Record<string, string> = {
   h2_content: `font-size:18px;color:rgb(34,34,34);line-height:1.8em;letter-spacing:0em;padding:0 0 0 10px;border-left:5px solid ${PRIMARY_COLOR};`,
   // h3 外层
   h3: `margin-top:30px;margin-bottom:15px;margin-left:0;margin-right:0;padding:0;display:flex;`,
-  h3_content: `font-size:16px;color:rgb(0,0,0);line-height:1.5em;letter-spacing:0em;font-weight:bold;display:block;`,
+  h3_content: `font-size:16px;color:${PRIMARY_COLOR};line-height:1.5em;letter-spacing:0em;font-weight:bold;display:block;`,
   // h4
   h4: `margin-top:30px;margin-bottom:15px;font-size:15px;font-weight:bold;color:#222;line-height:1.5em;`,
 
