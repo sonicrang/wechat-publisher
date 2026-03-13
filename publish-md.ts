@@ -496,12 +496,8 @@ function convertToHTML(markdown: string): string {
     themeMode: "light",
   });
 
-  // 保留 Markdown 原始段落边界，避免图片与相邻正文被折叠进同一段落流
-  const cleanMarkdown = markdown;
-
   const { markdownContent, readingTime } =
-    renderer.parseFrontMatterAndContent(cleanMarkdown);
-  marked.setOptions({ breaks: true });
+    renderer.parseFrontMatterAndContent(markdown);
   const rawHtml = marked.parse(markdownContent) as string;
 
   // 表格处理
@@ -512,15 +508,6 @@ function convertToHTML(markdown: string): string {
         .replace(/<th>/g, `<th style="${STYLES.th}">`)
         .replace(/<td>/g, `<td style="${STYLES.td}">`);
       return `<section style="max-width:100%;overflow:auto"><table style="${STYLES.table}">${processed}</table></section>`;
-    },
-  );
-
-  // figcaption: 保留内容文字（mdnice 显示 alt 文字作为图片说明）
-  htmlContent = htmlContent.replace(
-    /<figcaption[^>]*>([\s\S]*?)<\/figcaption>/g,
-    (_m, content: string) => {
-      const text = content.trim();
-      return `<figcaption style="${STYLES.figcaption}">${text}</figcaption>`;
     },
   );
 

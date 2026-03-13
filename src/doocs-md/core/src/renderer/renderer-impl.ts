@@ -28,7 +28,6 @@ export { hljs }
 marked.setOptions({
   breaks: true,
 })
-marked.use(markedSlider())
 
 function escapeHtml(text: string): string {
   return text

@@ -75,56 +75,6 @@ export const COMMON_LANGUAGES: Record<string, LanguageFn> = {
   yaml,
 }
 
-// highlight.js CDN 配置
-const HLJS_VERSION = `11.11.1`
-const HLJS_CDN_BASE = `https://cdn-doocs.oss-cn-shenzhen.aliyuncs.com/npm/highlightjs/${HLJS_VERSION}`
-
-// 缓存正在加载的语言
-const loadingLanguages = new Map<string, Promise<void>>()
-
-/**
- * 生成语言包的 CDN URL
- */
-function grammarUrlFor(language: string): string {
-  return `${HLJS_CDN_BASE}/es/languages/${language}.min.js`
-}
-
-/**
- * 动态加载并注册语言
- * @param language 语言名称
- * @param hljs highlight.js 实例
- */
-export async function loadAndRegisterLanguage(language: string, hljs: any): Promise<void> {
-  // 如果已经注册，直接返回
-  if (hljs.getLanguage(language)) {
-    return
-  }
-
-  // 如果正在加载，等待加载完成
-  if (loadingLanguages.has(language)) {
-    await loadingLanguages.get(language)
-    return
-  }
-
-  // 开始加载
-  const loadPromise = (async () => {
-    try {
-      const module = await import(/* @vite-ignore */ grammarUrlFor(language))
-      hljs.registerLanguage(language, module.default)
-    }
-    catch (error) {
-      console.warn(`Failed to load language: ${language}`, error)
-      throw error
-    }
-    finally {
-      loadingLanguages.delete(language)
-    }
-  })()
-
-  loadingLanguages.set(language, loadPromise)
-  await loadPromise
-}
-
 /**
  * 格式化高亮后的代码，处理空格和制表符
  */
@@ -188,51 +138,4 @@ export function highlightAndFormatCode(text: string, language: string, hljs: any
   return highlighted
 }
 
-export function highlightCodeBlock(codeBlock: Element, language: string, hljs: any): void {
-  const rawCode = codeBlock.getAttribute(`data-raw-code`)
-  const showLineNumber = codeBlock.getAttribute(`data-show-line-number`) === `true`
 
-  if (!rawCode)
-    return
-
-  const text = rawCode.replace(/&quot;/g, `"`)
-
-  const highlighted = highlightAndFormatCode(text, language, hljs, showLineNumber)
-
-  codeBlock.innerHTML = highlighted
-  codeBlock.removeAttribute(`data-language-pending`)
-  codeBlock.removeAttribute(`data-raw-code`)
-  codeBlock.removeAttribute(`data-show-line-number`)
-}
-
-/**
- * 高亮 DOM 中待处理的代码块
- * 查找带有 data-language-pending 属性的代码块，动态加载语言后重新高亮
- * @param hljs highlight.js 实例
- * @param container 容器元素（可选，默认为 document）
- */
-export function highlightPendingBlocks(hljs: any, container: Document | Element = document): void {
-  const pendingBlocks = container.querySelectorAll(`code[data-language-pending]`)
-
-  pendingBlocks.forEach((codeBlock) => {
-    const language = codeBlock.getAttribute(`data-language-pending`)
-    if (!language)
-      return
-
-    if (hljs.getLanguage(language)) {
-      // 语言已加载，直接高亮
-      highlightCodeBlock(codeBlock, language, hljs)
-    }
-    else {
-      // 动态加载语言后重新高亮
-      loadAndRegisterLanguage(language, hljs).then(() => {
-        highlightCodeBlock(codeBlock, language, hljs)
-      }).catch(() => {
-        // 加载失败，移除标记
-        codeBlock.removeAttribute(`data-language-pending`)
-        codeBlock.removeAttribute(`data-raw-code`)
-        codeBlock.removeAttribute(`data-show-line-number`)
-      })
-    }
-  })
-}
