@@ -86,7 +86,7 @@ const STYLES: Record<string, string> = {
   figcaption: `color:rgb(136,136,136);font-size:12px;line-height:1.5em;letter-spacing:0em;text-align:center;font-weight:normal;margin-top:5px;margin-bottom:0;padding:0;`,
 
   // ---- 表格 ----
-  table: `color:#333;width:auto;border-collapse:collapse;margin:10px 0;overflow:hidden;border:1px solid #dfdfdf;`,
+  table: `color:#333;width:auto;border-collapse:collapse;margin:10px 0;border:1px solid #dfdfdf;`,
   th: `border:1px solid #dfdfdf;padding:0.5em 1em;background:${PRIMARY_COLOR};color:#fff;font-weight:bold;text-align:left;word-break:keep-all;white-space:nowrap;`,
   td: `border:1px solid #dfdfdf;padding:0.5em 1em;text-align:left;word-break:normal;overflow-wrap:break-word;`,
 
